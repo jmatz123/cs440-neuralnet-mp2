@@ -44,9 +44,9 @@ class NeuralNet(nn.Module):
 
         """
         super(NeuralNet, self).__init__()
-        # self.lrate = lrate        
-        # self.loss_fn = loss_fn
-        # self.net = torch.nn.Sequential(torch.nn.Linear(in_size, 128), torch.nn.ReLU(), torch.nn.Linear(128, out_size))
+        self.lrate = lrate        
+        self.loss_fn = loss_fn
+        self.net = torch.nn.Sequential(torch.nn.Linear(in_size, 32), torch.nn.ReLU(), torch.nn.Linear(32, out_size))
         
         # self.optims = torch.optim.SGD(self.parameters(), self.lrate)
         # raise NotImplementedError("You need to write this part!")
@@ -83,16 +83,16 @@ class NeuralNet(nn.Module):
         @param y: an (N,) Tensor
         @return L: total empirical risk (mean of losses) at this timestep as a float
         """
-        # optimizer = torch.optim.SGD(self.net.parameters(), self.lrate)
-        # find  = self.forward(x)
+        optimizer = torch.optim.SGD(self.net.parameters(), self.lrate)
+        find  = self.forward(x)
 
-        # loss_function = self.loss_fn(find, y)
+        loss_function = self.loss_fn(find, y)
 
-        # optimizer.zero_grad()
-        # loss_function.backward()
-        # optimizer.step()
+        optimizer.zero_grad()
+        loss_function.backward()
+        optimizer.step()
 
-        # return loss_function.item()
+        return loss_function.item()
 
         # raise NotImplementedError("You need to write this part!")
         # return 0.0
@@ -113,29 +113,30 @@ def fit(train_set, train_labels, dev_set, n_iter, batch_size=100):
             Ensure that len(losses) == n_iter.
     @return yhats: an (M,) NumPy array of binary labels for dev_set
     @return net: a NeuralNet object
-    # """
-    # losses = []
-    # yhats = np.zeros(len(dev_set))
+    """
+    losses = []
+    yhats = np.zeros(len(dev_set))
 
+    # training
     # # find the lrate, in_size, and out_size
-    # nNet = NeuralNet(lrate = , loss_fn= torch.nn.CrossEntropyLoss(), in_size= , out_size=)
-    # working_set = (train_set - train_set.mean()) / train_set.std()
+    nNet = NeuralNet(lrate = .005, loss_fn= torch.nn.CrossEntropyLoss(), in_size = len(train_set[0]), out_size=3)
+    working_set = (train_set - train_set.mean()) / train_set.std()
 
-    # for i in range(n_iter) : #might need to go to n_iter - 1
-    #     first = i * batch_size
-    #     last = (i+1) * batch_size
+    for i in range(n_iter) : #might need to go to n_iter - 1
+        first = i * batch_size
+        last = (i+1) * batch_size
 
-    #     train = working_set[first : last]
-    #     labels = train_labels[first : last]
-
-    #     losses.append(nNet.step(train, labels))
-    #     diff_steps = nNet.step(train, labels)
+        train = working_set[first : last]
+        labels = train_labels[first : last]
+        loss = nNet.step(train, labels)
+        losses.append(loss)
 
     # # raise NotImplementedError("You need to write this part!")
 
-    # net = nNet(dev_set).detach().numpy()
+    # development
+    net = nNet(dev_set).detach().numpy()
 
-    # for i in range(len(net)) :
-    #     yhats[i] = np.argmax(net[i])
+    for i in range(len(net)) :
+        yhats[i] = np.argmax(net[i])
 
-    # return losses, yhats, nNet
+    return losses, yhats, nNet

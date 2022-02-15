@@ -13,7 +13,7 @@ from os import listdir
 import numpy as np
 import pickle
 import random
-#import torch
+import torch
 
 def unpickle(file):
     with open(file, 'rb') as fo:

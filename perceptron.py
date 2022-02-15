@@ -74,12 +74,7 @@ def trainPerceptron(train_set, train_labels, learning_rate, max_iter):
             # else :
             #     b += learning_rate * labels[i]
             #     W += train_set[j] * learning_rate * labels[i]
-            guess = 0
-
-            if (dot_prod > 0) :
-                guess = 1
-            else :
-                guess = 0
+            guess = (0, 1)[dot_prod > 0]
 
             # if (j == 0) :
             weight[0] += learning_rate * (label - guess)
