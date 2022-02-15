@@ -46,7 +46,7 @@ class NeuralNet(nn.Module):
         super(NeuralNet, self).__init__()
         self.lrate = lrate        
         self.loss_fn = loss_fn
-        self.net = torch.nn.Sequential(torch.nn.Linear(in_size, 32), torch.nn.ReLU(), torch.nn.Linear(32, out_size))
+        self.net = torch.nn.Sequential(torch.nn.Linear(in_size, 32, bias = True), torch.nn.ReLU(), torch.nn.Linear(32, out_size, bias = True))
         
         # self.optims = torch.optim.SGD(self.parameters(), self.lrate)
         # raise NotImplementedError("You need to write this part!")
