@@ -119,7 +119,7 @@ def fit(train_set, train_labels, dev_set, n_iter, batch_size=100):
 
     # training
     # # find the lrate, in_size, and out_size
-    nNet = NeuralNet(lrate = .02625, loss_fn= torch.nn.CrossEntropyLoss(), in_size = len(train_set[0]), out_size=2)
+    nNet = NeuralNet(lrate = .025625, loss_fn= torch.nn.CrossEntropyLoss(), in_size = len(train_set[0]), out_size=2)
     working_train_set = (train_set - train_set.mean()) / train_set.std()
 
     for i in range(n_iter) : #might need to go to n_iter - 1
