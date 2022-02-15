@@ -123,8 +123,10 @@ def fit(train_set, train_labels, dev_set, n_iter, batch_size=100):
     working_set = (train_set - train_set.mean()) / train_set.std()
 
     for i in range(n_iter) : #might need to go to n_iter - 1
-        first = i * batch_size
-        last = (i+1) * batch_size
+        # first = i * batch_size
+        # last = (i+1) * batch_size
+        first = i
+        last = i + batch_size
 
         train = working_set[first : last]
         labels = train_labels[first : last]
