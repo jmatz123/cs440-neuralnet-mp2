@@ -46,7 +46,7 @@ class NeuralNet(nn.Module):
         super(NeuralNet, self).__init__()
         self.lrate = lrate        
         self.loss_fn = loss_fn
-        self.net = torch.nn.Sequential(torch.nn.Linear(in_size, 32, bias = True), torch.nn.Sigmoid(), torch.nn.Linear(32, out_size, bias = True))
+        self.net = torch.nn.Sequential(torch.nn.Linear(in_size, 32, bias = True), torch.nn.ReLU(), torch.nn.Linear(32, out_size, bias = True))
         
         # self.optims = torch.optim.SGD(self.parameters(), self.lrate)
         # raise NotImplementedError("You need to write this part!")
@@ -134,7 +134,7 @@ def fit(train_set, train_labels, dev_set, n_iter, batch_size=100):
     # # raise NotImplementedError("You need to write this part!")
 
     # development
-    working_dev_set = (dev_set - dev_set.mean()) / dev_set.std()
+    working_dev_set = (dev_set - train_set.mean()) / train_set.std()
     net = nNet(working_dev_set).detach().numpy()
 
     for i in range(len(net)) :
