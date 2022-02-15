@@ -47,6 +47,7 @@ class NeuralNet(nn.Module):
         self.lrate = lrate        
         self.loss_fn = loss_fn
         self.net = torch.nn.Sequential(torch.nn.Linear(in_size, 32, bias = True), torch.nn.ReLU(), torch.nn.Linear(32, out_size, bias = True))
+        self.optims = optim.SGD(self.net.parameters(), self.lrate, weight_decay = 0.004)
         
         # self.optims = torch.optim.SGD(self.parameters(), self.lrate)
         # raise NotImplementedError("You need to write this part!")
@@ -114,24 +115,46 @@ def fit(train_set, train_labels, dev_set, n_iter, batch_size=100):
     @return yhats: an (M,) NumPy array of binary labels for dev_set
     @return net: a NeuralNet object
     """
-    losses = []
+    losses = np.zeros(len(dev_set))
     yhats = np.zeros(len(dev_set))
 
     # training
     # # find the lrate, in_size, and out_size
-    nNet = NeuralNet(lrate = .026875, loss_fn= torch.nn.CrossEntropyLoss(), in_size = len(train_set[0]), out_size=2)
+    nNet = NeuralNet(lrate = .0001, loss_fn= torch.nn.CrossEntropyLoss(), in_size = len(train_set[0]), out_size=2)
     working_train_set = (train_set - train_set.mean()) / train_set.std()
 
-    for i in range(n_iter) : #might need to go to n_iter - 1
-        first = i * batch_size
-        last = (i+1) * batch_size
+    # for i in range(n_iter) : #might need to go to n_iter - 1
+    #     first = i * batch_size
+    #     last = (i+1) * batch_size
+    #     # total = len(train_set)//100
+    #     # first_total = i - 2 - total
+    #     # last_total = i - 1 - total
 
-        train = working_train_set[first : last]
-        labels = train_labels[first : last]
-        loss = nNet.step(train, labels)
-        losses.append(loss)
+    #     # if (i < total) :
+    #     #     train = working_train_set[first_total : last_total]
+    #     #     labels = train_labels[first_total : last_total]
+    #     # else :
+    #     #     train = working_train_set[first : last]
+    #     #     labels = train_labels[first : last]
 
-    # # raise NotImplementedError("You need to write this part!")
+    #     train = working_train_set[first : last]
+    #     labels = train_labels[first : last]
+
+    #     # nNet.optims.zero_grad()
+    #     loss = nNet.step(train, labels)
+    #     # nNet.optims.step()
+    #     losses.append(loss)
+
+    for j in range(n_iter) :
+        train = torch.split(working_train_set, batch_size)
+        label = torch.split(train_labels, batch_size)
+
+        i = 0
+        for batch in train : #might need to go to n_iter - 1
+            loss = nNet.step(train[i], label[i])
+            losses[i] += loss
+
+            i += 1
 
     # development
     working_dev_set = (dev_set - train_set.mean()) / train_set.std()
