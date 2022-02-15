@@ -120,13 +120,13 @@ def fit(train_set, train_labels, dev_set, n_iter, batch_size=100):
     # training
     # # find the lrate, in_size, and out_size
     nNet = NeuralNet(lrate = .005, loss_fn= torch.nn.CrossEntropyLoss(), in_size = len(train_set[0]), out_size=2)
-    working_set = (train_set - train_set.mean()) / train_set.std()
+    working_train_set = (train_set - train_set.mean()) / train_set.std()
 
     for i in range(n_iter) : #might need to go to n_iter - 1
         first = i * batch_size
         last = (i+1) * batch_size
 
-        train = working_set[first : last]
+        train = working_train_set[first : last]
         labels = train_labels[first : last]
         loss = nNet.step(train, labels)
         losses.append(loss)
@@ -134,7 +134,8 @@ def fit(train_set, train_labels, dev_set, n_iter, batch_size=100):
     # # raise NotImplementedError("You need to write this part!")
 
     # development
-    net = nNet(dev_set).detach().numpy()
+    working_dev_set = (dev_set - dev_set.mean()) / dev_set.std()
+    net = nNet(working_dev_set).detach().numpy()
 
     for i in range(len(net)) :
         yhats[i] = np.argmax(net[i])
